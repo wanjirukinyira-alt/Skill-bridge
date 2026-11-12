@@ -6,7 +6,7 @@ export const createUser = async(req,res)=>{
     {
         const {fullname,email,phone,location,password } =req.body;
         //validation
-        if(!fullname || !email || !phone || !locaion ||!password)
+        if(!fullname || !email || !phone || !location ||!password)
         {
             return res.status(400).json({
                 success:false,
@@ -37,7 +37,7 @@ export const createUser = async(req,res)=>{
             });
         }
         //hash the password
-        const hashedPassword = await bcrypt.hash(passworld, 12);
+        const hashedPassword = await bcrypt.hash(password, 12);
 
         //save the user
         const newEmployer =new User({
@@ -55,14 +55,15 @@ export const createUser = async(req,res)=>{
 
         return res.status(201).json({
             success:true,
-            message:`Company with name ${fullname}created`
+            message:`Company with name ${fullname} created`
         })
     } 
     catch (error) 
     {
+        console.log(error)
         return res.status(500).json({
             success:false,
-            message:"something went wrong"
+            message:"something went wrong again"
         }
         
    )};

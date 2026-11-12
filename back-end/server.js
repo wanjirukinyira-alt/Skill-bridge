@@ -2,11 +2,14 @@ import express from "express";
 import dotenv from "dotenv";
 import { connectDB } from "./config/config.js";
 import employerRoutes from "./routes/employer.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
 
 dotenv.config(); //allows us to process environment variable
 //create an instance of express
 const app =express();
+
+app.use(express.json());
 
 const PORT = process.env.PORT;
 
@@ -19,7 +22,8 @@ app.use("/api/v1/health",(req,res)=>{
 });
 
 //paths
-app.use("/api/v1/employer", employerRoutes)
+app.use("/api/v1/employer", employerRoutes);
+app.use("/api/v1/auth",authRoutes);
 
 const startServer = async()=>{
 
