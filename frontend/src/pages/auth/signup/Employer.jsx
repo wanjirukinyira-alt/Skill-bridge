@@ -1,40 +1,43 @@
-import { useState, uswState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const EmployerSignup = () => {
 
-    const [fullname, setFullname] = useState("");
+    const [fullname, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [location, setLocation] = useState("");
     const [password, setPassword] = useState("");
     const redirect = useNavigate();
+    const backendLink = useSelector((state)=>state.prod.link);
 
     const registerEmployer = async (e) => {
         e.preventDefault();
         try {
             const employerData = { fullname, email, phone, location, password };
-            const response = await axios.post("http://localhost:7000/api/v1/employer/register", employerData, {
-                withCredentials: true
-            });
-            redirect("/login");
 
+            const response = await axios.post(`${backendLink}/api/v1/employer/register`,
+                employerData,
+                {
+                    withCredentials: true
+                });
+
+            redirect("/login");
             toast.success(response.data.message);
 
-            setFullname(""),
-                setEmail(""),
-                setPhone(""),
-                setLocation(""),
-                setPassword("")
-
+            setFullName(""),
+            setEmail(""),
+            setLocation(""),
+            setPhone(""),
+            setPassword("")
 
         }
         catch (error) {
             toast.error(error.response.data.message);
         }
-
     }
 
     return (
@@ -96,7 +99,7 @@ const EmployerSignup = () => {
                                             placeholder="e.g. Travel Companies Ltd"
                                             className="form-control"
                                             value={fullname}
-                                            onChange={(e) => setFullname(e.target.value)}
+                                            onChange={(e) => setFullName(e.target.value)}
                                         />
                                     </div>
 

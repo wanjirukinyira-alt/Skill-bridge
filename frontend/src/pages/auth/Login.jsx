@@ -1,7 +1,50 @@
 
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector,useDispatch } from "react-redux";
+import { authActions } from "../../store/auth";
 
 const Login = () => {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const redirect = useNavigate();
+    const backendLink = useSelector((state)=>state.prod.link);
+    const dispatch = useDispatch();
+
+    const userLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const userData = { email, password };
+            const response = await axios.post(`${backendLink}/api/v1/auth/login`, userData, {
+                withCredentials: true
+            });
+            dispatch(authActions.login());
+            //redirect to specific dashbaord
+            switch(response.data.user)
+            {
+                case "admin":
+                    redirect("/admin");
+                    break;
+                case "employer":
+                    redirect("/employer");
+                    break;
+                case "jobseeker":
+                    redirect("/job-seeker");
+                    break;
+                default:
+                    redirect("/login");
+                    break;  
+            }
+            //console.log(response.data.user);
+            toast.success(response.data.message);
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+    }
+
     return (
         <div className="container my-5">
             <div className="row justify-content-center">
@@ -34,7 +77,7 @@ const Login = () => {
                                     </p>
                                 </div>
 
-                                <form>
+                                <form onSubmit={userLogin}>
                                     <div className="mb-3">
                                         <label htmlFor="email" className="form-label">
                                             Email Address
@@ -45,6 +88,8 @@ const Login = () => {
                                             id="email"
                                             placeholder="e.g. james@gmail.com"
                                             className="form-control"
+                                            value={email}
+                                            onChange={(e)=>setEmail(e.target.value)}
                                         />
                                     </div>
 
@@ -58,6 +103,8 @@ const Login = () => {
                                             id="password"
                                             placeholder="Enter your password"
                                             className="form-control"
+                                            value={password}
+                                            onChange={(e)=>setPassword(e.target.value)}
                                         />
                                     </div>
 

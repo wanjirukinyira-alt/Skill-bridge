@@ -63,7 +63,7 @@ import jwt from "jsonwebtoken";
         return res.status(200).json({
             success:true,
             message:`Welcome back ${user.fullname}`,
-            token
+            user:user.role,
         });
 
 
